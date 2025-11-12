@@ -1,7 +1,8 @@
 # S3 Bucket
 resource "aws_s3_bucket" "main" {
-  bucket = "${var.project_name}-${var.environment}-${var.bucket_name}"
-  
+  bucket        = "${var.project_name}-${var.environment}-${var.bucket_name}"
+  force_destroy = true
+
   tags = {
     Name        = "${var.project_name}-${var.environment}-${var.bucket_name}"
     Environment = var.environment
@@ -11,7 +12,7 @@ resource "aws_s3_bucket" "main" {
 # Enable versioning
 resource "aws_s3_bucket_versioning" "main" {
   bucket = aws_s3_bucket.main.id
-  
+
   versioning_configuration {
     status = var.enable_versioning ? "Enabled" : "Suspended"
   }
@@ -28,14 +29,36 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
   }
 }
 
-# Block public access
+# S3 Bucket Policy for public read access
+resource "aws_s3_bucket_policy" "public_read" {
+  bucket = aws_s3_bucket.main.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.main.arn}/*"
+      }
+    ]
+  })
+}
+
+# Update public access block to allow public reads
 resource "aws_s3_bucket_public_access_block" "main" {
   bucket = aws_s3_bucket.main.id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  # Allow public access to the bucket
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  depends_on = [
+    aws_s3_bucket_policy.public_read
+  ]
 }
 
 # CORS configuration

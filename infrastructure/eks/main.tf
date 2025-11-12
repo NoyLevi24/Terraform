@@ -35,7 +35,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Environment = "dev"
+      Environment = var.environment
       Project     = var.project_name
       Terraform   = "true"
     }
@@ -94,7 +94,7 @@ data "terraform_remote_state" "storage_db" {
 
 # EKS Cluster Module
 module "eks" {
-  source = "../../../modules/eks"
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/eks"
 
   project_name = var.project_name
   environment  = var.environment
@@ -165,7 +165,7 @@ module "aws_load_balancer_controller_irsa" {
 
 # AWS Load Balancer Controller Module
 module "aws_load_balancer_controller" {
-  source = "../../../modules/blueprint/aws-load-balancer-controller"
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/blueprint/aws-load-balancer-controller"
 
   cluster_name      = module.eks.cluster_name
   irsa_role_arn     = module.aws_load_balancer_controller_irsa.iam_role_arn
@@ -179,13 +179,13 @@ module "aws_load_balancer_controller" {
 
 # ArgoCD Module
 module "argocd" {
-  source     = "../../../modules/blueprint/argocd"
+  source     = "/home/noylevi/Bootcamp-Project/terraform/modules/blueprint/argocd"
   depends_on = [module.eks]
 }
 
 # Kube Prometheus Stack Module
 module "kube_prometheus_stack" {
-  source = "../../../modules/blueprint/kube-prometheus-stack"
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/blueprint/kube-prometheus-stack"
   depends_on = [
     module.eks,
     module.argocd

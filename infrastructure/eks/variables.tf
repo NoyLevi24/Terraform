@@ -31,7 +31,7 @@ variable "node_max_capacity" {
 variable "node_min_capacity" {
   description = "Minimum number of worker nodes"
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "node_instance_types" {

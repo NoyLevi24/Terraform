@@ -30,12 +30,12 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "../../../modules/vpc"
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/vpc"
 
-  project_name           = var.project_name
-  environment            = var.environment
-  aws_region            = var.aws_region
-  vpc_cidr              = var.vpc_cidr
-  public_subnet_cidrs   = var.public_subnets
-  private_subnet_cidrs  = var.private_subnets
+  project_name         = var.project_name
+  environment          = var.environment
+  aws_region           = var.aws_region
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnets
+  private_subnet_cidrs = var.private_subnets
 }

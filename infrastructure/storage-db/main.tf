@@ -43,7 +43,7 @@ data "terraform_remote_state" "networking" {
 
 # Create RDS Database
 module "rds" {
-  source = "../../../modules/rds"
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/rds"
 
   project_name       = var.project_name
   environment        = var.environment
@@ -55,12 +55,12 @@ module "rds" {
   db_username       = var.db_username
   db_password       = var.db_password
   db_instance_class = var.db_instance_class
-  
+
 }
 
 # Create S3 Bucket
 module "s3" {
-  source = "../../../modules/s3"
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/s3"
 
   project_name      = var.project_name
   environment       = var.environment

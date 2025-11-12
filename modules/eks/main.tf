@@ -6,8 +6,8 @@ module "eks" {
   name               = "${var.project_name}-cluster"
   kubernetes_version = var.cluster_version
 
-  endpoint_public_access  = true
-  endpoint_private_access = true
+  endpoint_public_access                   = true
+  endpoint_private_access                  = true
   enable_cluster_creator_admin_permissions = true
 
   # Network configuration
@@ -17,13 +17,13 @@ module "eks" {
   # EKS Managed Node Group(s)
   eks_managed_node_groups = {
     "journai-eks-nodes" = {
-      min_size     = var.min_size
-      max_size     = var.max_size
-      desired_size = var.desired_size
+      min_size       = var.min_size
+      max_size       = var.max_size
+      desired_size   = var.desired_size
       instance_types = var.instance_types
       ami_type       = "AL2023_x86_64_STANDARD"
 
-      capacity_type = var.environment == "prod" ? "ON_DEMAND" : "SPOT"
+      capacity_type = "ON_DEMAND"
 
       iam_role_additional_policies = {
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
@@ -42,7 +42,7 @@ module "eks" {
       before_compute = true
     }
     aws-ebs-csi-driver = {
-      most_recent = true
+      most_recent              = true
       service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
     }
   }

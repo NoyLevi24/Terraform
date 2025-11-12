@@ -1,6 +1,6 @@
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "~> 6.13"  # Compatible with AWS Provider >= 6.0.0
+  version = "~> 6.13" # Compatible with AWS Provider >= 6.0.0
 
   identifier = "${var.project_name}-db-${var.environment}"
 
@@ -14,8 +14,8 @@ module "db" {
   # Storage
   allocated_storage     = 20
   max_allocated_storage = 100
-  storage_type         = "gp3"
-  storage_encrypted    = true
+  storage_type          = "gp3"
+  storage_encrypted     = true
 
   # Database credentials
   db_name  = var.db_name
@@ -25,31 +25,31 @@ module "db" {
 
   # Network
   create_db_subnet_group = true
-  subnet_ids            = var.private_subnet_ids
+  subnet_ids             = var.private_subnet_ids
   vpc_security_group_ids = [module.rds_security_group.security_group_id]
-  
+
   # Maintenance
   maintenance_window      = "Mon:04:00-Mon:05:00"
-  backup_window          = "03:00-04:00"
+  backup_window           = "03:00-04:00"
   backup_retention_period = var.environment == "prod" ? 35 : 7
-  
+
   # High availability
   multi_az = var.environment == "prod" ? true : false
-  
+
   # Security
-  deletion_protection = var.environment == "prod" ? true : false
-  skip_final_snapshot = var.environment == "prod" ? false : true
+  deletion_protection         = var.environment == "prod" ? true : false
+  skip_final_snapshot         = var.environment == "prod" ? false : true
   manage_master_user_password = false
-  
+
   # Monitoring
-  monitoring_interval = 30
-  monitoring_role_name = "${var.project_name}-rds-monitoring-role-${var.environment}"
+  monitoring_interval    = 30
+  monitoring_role_name   = "${var.project_name}-rds-monitoring-role-${var.environment}"
   create_monitoring_role = true
-  
+
   # Performance Insights
-  performance_insights_enabled = true
+  performance_insights_enabled          = true
   performance_insights_retention_period = 7
-  
+
   # Parameters
   parameters = [
     {
@@ -62,16 +62,18 @@ module "db" {
     },
     {
       name  = "rds.force_ssl"
-      value = "0"
+      value = "1"
     }
   ]
 
+  # SSL will be enabled with default RDS certificate
+
   # Tags
   tags = {
-      Name        = "${var.project_name}-db"
-      Environment = var.environment
-      Project     = var.project_name
-      Terraform   = "true"
+    Name        = "${var.project_name}-db"
+    Environment = var.environment
+    Project     = var.project_name
+    Terraform   = "true"
   }
 }
 
@@ -90,8 +92,8 @@ module "rds_security_group" {
       from_port   = 5432
       to_port     = 5432
       protocol    = "tcp"
-      description = "PostgreSQL access from within VPC"
-      cidr_blocks = join(",", var.vpc_cidr)  # Convert list to comma-separated string
+      description = "PostgreSQL SSL access from within VPC"
+      cidr_blocks = join(",", var.vpc_cidr) # Convert list to comma-separated string
     }
   ]
 
@@ -106,8 +108,12 @@ module "rds_security_group" {
     }
   ]
 
+  # Tags for better resource management
   tags = {
-    Name = "${var.project_name}-rds-sg-${var.environment}"
+    Name        = "${var.project_name}-rds-sg-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    Terraform   = "true"
   }
 }
 

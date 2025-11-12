@@ -16,7 +16,7 @@ output "cluster_certificate_authority" {
 
 output "node_role_arn" {
   description = "IAM role ARN of the EKS managed node group"
-  value       = try(
+  value = try(
     module.eks.eks_managed_node_groups["${var.project_name}-node-group"].iam_role_arn,
     null
   )

@@ -18,21 +18,21 @@ module "vpc" {
 
   tags = {
     "kubernetes.io/cluster/${var.project_name}-cluster" = "shared"
-    Environment = var.environment
-    Project     = var.project_name
-    Terraform   = "true"
+    Environment                                         = var.environment
+    Project                                             = var.project_name
+    Terraform                                           = "true"
   }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.project_name}-cluster" = "shared"
-    "kubernetes.io/role/internal-elb" = "1"
-    "karpenter.sh/discovery" = "${var.project_name}-cluster"
+    "kubernetes.io/role/internal-elb"                   = "1"
+    "karpenter.sh/discovery"                            = "${var.project_name}-cluster"
   }
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.project_name}-cluster" = "shared"
-    "kubernetes.io/role/elb" = "1"
-    "karpenter.sh/discovery" = "${var.project_name}-cluster"
+    "kubernetes.io/role/elb"                            = "1"
+    "karpenter.sh/discovery"                            = "${var.project_name}-cluster"
   }
 }
 
@@ -40,10 +40,10 @@ module "vpc" {
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = module.vpc.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.s3"
-  
+
   # Using the private route tables created by the VPC module
   route_table_ids = module.vpc.private_route_table_ids
-  
+
   tags = {
     Name = "${var.project_name}-s3-endpoint-${var.environment}"
   }
