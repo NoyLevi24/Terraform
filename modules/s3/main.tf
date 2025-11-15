@@ -44,6 +44,9 @@ resource "aws_s3_bucket_policy" "public_read" {
       }
     ]
   })
+  depends_on = [
+    aws_s3_bucket_public_access_block.main
+  ]
 }
 
 # Update public access block to allow public reads
@@ -56,9 +59,6 @@ resource "aws_s3_bucket_public_access_block" "main" {
   ignore_public_acls      = false
   restrict_public_buckets = false
 
-  depends_on = [
-    aws_s3_bucket_policy.public_read
-  ]
 }
 
 # CORS configuration

@@ -191,3 +191,16 @@ module "kube_prometheus_stack" {
     module.argocd
   ]
 }
+
+# Vault Module
+/*
+module "vault" {
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/blueprint/vault"
+
+    depends_on = [
+    module.eks,
+    module.argocd,
+    module.kube_prometheus_stack
+  ]
+}
+*/
