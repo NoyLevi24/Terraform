@@ -22,8 +22,7 @@ module "eks" {
       desired_size   = var.desired_size
       instance_types = var.instance_types
       ami_type       = "AL2023_x86_64_STANDARD"
-
-      capacity_type = "ON_DEMAND"
+      capacity_type  = "ON_DEMAND"
 
       iam_role_additional_policies = {
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
@@ -33,16 +32,26 @@ module "eks" {
 
   # Cluster add-ons
   addons = {
-    coredns = {}
+    coredns = {
+      addon_version     = "v1.12.1-eksbuild.2"
+      resolve_conflicts = "OVERWRITE"
+    }
     eks-pod-identity-agent = {
       before_compute = true
     }
-    kube-proxy = {}
+    kube-proxy = {
+      addon_version     = "v1.33.3-eksbuild.4"
+      resolve_conflicts = "OVERWRITE"
+    }
     vpc-cni = {
-      before_compute = true
+      addon_version     = "v1.20.4-eksbuild.1"
+      resolve_conflicts = "OVERWRITE"
+      before_compute    = false
+      # Let EKS manage the IAM role automatically
     }
     aws-ebs-csi-driver = {
-      most_recent              = true
+      addon_version            = "v1.52.1-eksbuild.1"
+      resolve_conflicts        = "OVERWRITE"
       service_account_role_arn = module.ebs_csi_irsa_role.iam_role_arn
     }
   }
@@ -74,6 +83,7 @@ module "eks" {
     Project     = var.project_name
   }
 }
+
 
 # Create IAM role for EBS CSI Driver
 module "ebs_csi_irsa_role" {
