@@ -183,11 +183,31 @@ module "argocd" {
   depends_on = [module.eks]
 }
 
+# External Secrets Operator Module
+module "eso" {
+  source = "/home/noylevi/Bootcamp-Project/terraform/modules/blueprint/eso"
+
+  project_name      = var.project_name
+  environment       = var.environment
+  aws_region        = var.aws_region
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  eks_dependency    = module.eks
+
+  tags = {
+    Environment = var.environment
+    Project     = var.project_name
+    Terraform   = "true"
+  }
+
+  depends_on = [module.eks]
+}
+
 # Kube Prometheus Stack Module
 module "kube_prometheus_stack" {
   source = "/home/noylevi/Bootcamp-Project/terraform/modules/blueprint/kube-prometheus-stack"
   depends_on = [
     module.eks,
-    module.argocd
+    module.argocd,
+    module.eso
   ]
 }
