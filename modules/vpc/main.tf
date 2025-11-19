@@ -7,7 +7,7 @@ module "vpc" {
   name = "${var.project_name}-${var.environment}"
   cidr = var.vpc_cidr
 
-  azs             = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs             = slice(data.aws_availability_zones.available.names, 0, 2)
   private_subnets = var.private_subnet_cidrs
   public_subnets  = var.public_subnet_cidrs
 

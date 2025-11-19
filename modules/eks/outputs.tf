@@ -46,3 +46,8 @@ output "node_security_group_id" {
   description = "Security group ID attached to the EKS cluster"
   value       = module.eks.node_security_group_id
 }
+
+output "vpc_cni_role_arn" {
+  description = "ARN of VPC CNI IAM role"
+  value       = module.vpc_cni_irsa_role.iam_role_arn
+}

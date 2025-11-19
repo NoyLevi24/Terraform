@@ -19,19 +19,19 @@ variable "project_name" {
 variable "node_desired_capacity" {
   description = "Desired number of worker nodes"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "node_max_capacity" {
   description = "Maximum number of worker nodes"
   type        = number
-  default     = 3
+  default     = 4
 }
 
 variable "node_min_capacity" {
   description = "Minimum number of worker nodes"
   type        = number
-  default     = 2
+  default     = 3
 }
 
 variable "node_instance_types" {

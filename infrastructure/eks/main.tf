@@ -211,3 +211,4 @@ module "kube_prometheus_stack" {
     module.eso
   ]
 }
+
