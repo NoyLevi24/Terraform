@@ -35,12 +35,13 @@ variable "db_username" {
   default     = "dbadmin"
 }
 
-variable "db_password" {
-  description = "Database password"
+# Secrets Manager (מחליף את db_password)
+variable "app_secret_name" {
+  description = "The name of the AWS Secrets Manager entry containing structured application secrets (JSON)."
   type        = string
-  sensitive   = true
-  default     = "journai123" # In production, use environment variables or a secret manager
+  default     = "journai/app-secrets"
 }
+
 
 # S3 Configuration
 variable "s3_bucket_name" {
